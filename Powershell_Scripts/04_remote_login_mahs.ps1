@@ -47,6 +47,11 @@ if (-not (Get-Command -Name Invoke-AzVmRunCommand -ErrorAction SilentlyContinue)
 
 # # Enable Windows VM
 # Enable-AzVMPSRemoting -Name $vmName -ResourceGroupName $resource_group -Protocol https -OsType Windows
+Get-Service -Name WinRM
+Start-Service -Name WinRM
+
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "20.120.33.54" -Concatenate -Force
+
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 
 Enable-PSRemoting -Force
