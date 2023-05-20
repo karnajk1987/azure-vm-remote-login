@@ -1,0 +1,47 @@
+trigger: none
+# branches:
+#   include:
+#     - main
+
+pool:
+  # name: "ENP0067-USRR17"
+  name: Default
+  demands:
+    - agent.name -equals ENP0067-USRR17-
+  # demands:
+  #   - agent.name -equals rpa-blue-prism
+
+steps:
+  - task: PowerShell@2
+    displayName: "Install Az.ImageBuilder module"
+    inputs:
+      targetType: "inline"
+      script: |
+        # Your PowerShell script goes here
+        Write-Host "Hello, PowerShell!"
+
+  - task: AzureCLI@2
+    displayName: "Azure Login"
+    inputs:
+      azureSubscription: "SC-DEPLOYMENT-MODEL"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: "az login"
+
+  - task: PowerShell@2
+    displayName: "Get Azure Context"
+    inputs:
+      targetType: "inline"
+      script: "Get-AzContext"
+
+  - task: PowerShell@2
+    displayName: "Get Azure Resource Group"
+    inputs:
+      targetType: "inline"
+      script: "Get-AzResourceGroup"
+
+  - task: PowerShell@2
+    displayName: "Run PowerShell script"
+    inputs:
+      targetType: "filePath"
+      filePath: "Powershell_Scripts/04_remote_login_mahs.ps1"

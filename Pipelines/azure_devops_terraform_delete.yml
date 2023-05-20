@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: rpa-blue-prism
+
+variables: bkstrgrg:'AZ-AS-RGP-VN-P-SEQ02232-AUTOMATION-SOM-PRODBO'
+  bkstrg:'migrationmahs'
+  bkcontainer:'tfstate'
+  bkstrgkey:'prod.terraform.tfstate'
+
+stages:
+  - stage: tfdestroy
+    jobs:
+      - job: destroy
+        steps:
+          - task: TerraformInstaller@0
+            displayName: tfinstall
+            inputs:
+              terraformVersion: "latest"
+
+          - task: TerraformTaskV4@4
+            displayName: Terraform init
+            inputs:
+              provider: "azurerm"
+              command: "init"
+              backendServiceArm: "AZ-AS-SPN-P-GF-1f52fa18a86e4844b1f7"
+              backendAzureRmResourceGroupName: "AZ-AS-RGP-VN-P-SEQ02232-AUTOMATION-SOM-PRODFO"
+              backendAzureRmKey: "$(bkstrgkey)"
+          - task: TerraformTaskV4@4
+            displayName: Terraform plan
+            inputs:
+              provider: "azurerm"
+              command: "plan"
+              environmentServiceNameAzureRM: "AZ-AS-SPN-P-GF-1f52fa18a86e4844b1f7"
+          - task: TerraformTaskV4@4
+            displayName: Terraform destroy
+            inputs:
+              provider: "azurerm"
+              command: "destroy"
+              environmentServiceNameAzureRM: "AZ-AS-SPN-P-GF-1f52fa18a86e4844b1f7"

@@ -1,0 +1,51 @@
+name: 'AzurePowerShell-Script-To-CreateSnoshot-From-VM'
+
+on:
+  push:
+    branches: [ main ]
+    paths: .github/workflows/snapshot-ci.yml
+  pull_request:
+    branches:  none # [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+
+jobs: 
+  Azure-Powershell-CreateSnoshot-From-VM:
+    runs-on: windows-latest
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+      - uses: actions/checkout@v1
+      - name: Install the powershell dependencies
+        run: |
+           Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+           Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -AllowClobber
+           Set-PSRepository PSGallery -InstallationPolicy Trusted
+           Install-Module Universal
+           Get-Module Universal -ListAvailable
+        shell: pwsh  
+        
+      - name: Sample Test Script
+        run: Write-Host 'Hello, Going to execute Powershell Script'          
+        shell: pwsh  
+        
+      - name: Login to Azure Portal Az Powershell
+        uses: azure/login@releases/v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Check the Resource Group for AzRM Module
+        uses: azure/powershell@v1
+        with:
+          azPSVersion: "latest"
+          inlineScript: |  
+            Get-AzContext
+            Get-AzResourceGroup
+
+      - name: Run Azure Powershell Script
+        shell: pwsh
+        run: ./snapshot.ps1
+          
