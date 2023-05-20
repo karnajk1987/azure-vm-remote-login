@@ -1,0 +1,115 @@
+name: "AzurePowerShell-Script-To-CreateSnoshot-From-VM"
+
+on:
+  push:
+    branches: [main]
+    paths: .github/workflows/mahs_remote_login_01.yml
+  pull_request:
+    branches: none # [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  WORKING_DIRECTORY: Powershell_Scripts
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+
+jobs:
+  scan-powershell-config:
+    runs-on: ubuntu-latest
+    name: Scan Powershell with Checov
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Run Checkov Scan
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ${{ env.WORKING_DIRECTORY }}
+          soft_fail: true # optional: do not return an error code if there are failed checks
+          # check: CKV_AWS_1 # optional: run only a specific check_id. can be comma separated list
+          # skip_check: CKV_AWS_2 # optional: skip a specific check_id. can be comma separated list
+          # quiet: true # optional: display only failed checks
+          # framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
+          # output_format: sarif # optional: the output format, one of: cli, json, junitxml, github_failed_only, or sarif. Default: sarif
+          # download_external_modules: true # optional: download external terraform modules from public git repositories and terraform registry
+          # log_level: DEBUG # optional: set log level. Default WARNING
+          # config_file: path/this_file
+          # baseline: cloudformation/.checkov.baseline # optional: Path to a generated baseline file. Will only report results not in the baseline.
+          # container_user: 1000 # optional: Define what UID and / or what GID to run the container under to prevent permission issues
+
+  Azure-Powershell-Script-To-Login:
+    name: Login to Azure portal
+    runs-on: rpa-blue-prism
+    environment: prod
+    needs: [scan-powershell-config]
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - uses: actions/checkout@v1
+      - name: Install the powershell dependencies
+        run: |
+          Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+          Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -AllowClobber
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Universal
+          Get-Module Universal -ListAvailable
+        shell: pwsh
+
+      - name: Sample Test Script
+        run: Write-Host 'Hello, Going to execute Powershell Script'
+        shell: pwsh
+
+      - name: Login to Azure
+        run: |
+          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID_MAHS }} --password ${{ secrets.AZURE_SPN_SECRET_MAHS }} --tenant ${{ secrets.AZURE_TENANT_ID_MAHS }}
+
+      - name: Azure resources check
+        run: |
+          az account show
+          az storage -h
+
+      # - name: Run Azure Powershell Script
+      #   shell: pwsh
+      #   run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+
+  Azure-Remote-Login-To-Run-Script:
+    name: Remote login To Run Script
+    runs-on: rpa-blue-prism
+    environment: prod
+    needs: [Azure-Powershell-Script-To-Login]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run Azure Powershell Script
+        shell: pwsh
+        run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+
+  # Azure-Remote-Login-VM:
+  #   name: Login to Windows VM using RDP
+  #   runs-on: windows-latest
+  #   environment: dev
+  #   needs: [Azure-Powershell-Script-Test]
+  #   steps:
+  #     # - name: Install RDP client
+  #     #   run: |
+  #     #     choco install -y microsoft-remote-desktop
+  #     # - name: Connect to VM using RDP
+  #     #   run: |
+  #     #     mstsc.exe /v:10.1.1.5
+
+  #     - name: Download Microsoft Remote Desktop client
+  #       run: |
+  #         Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2094662" -OutFile "rdp.msi"
+  #     - name: Install Microsoft Remote Desktop client
+  #       run: |
+  #         msiexec /i rdp.msi /quiet
+  #     #       - name: Connect to VM using RDP
+  #     #         run: |
+  #     #           mstsc.exe /v:10.1.1.5
+
+  #     - name: Check hostname
+  #       uses: azure/powershell@v1
+  #       with:
+  #         azPSVersion: "latest"
+  #         inlineScript: |
+  #           hostname
+  #           ipconfig
