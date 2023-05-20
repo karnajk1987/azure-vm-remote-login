@@ -40,7 +40,7 @@ jobs:
 
   Azure-Powershell-Script-To-Login:
     name: Login to Azure portal
-    runs-on: "ENP0067-USRR17-"
+    runs-on: [self-hosted, windows, ARM64]
     environment: prod
     needs: [scan-powershell-config]
     steps:
@@ -74,7 +74,7 @@ jobs:
 
   Azure-Remote-Login-To-Run-Script:
     name: Remote login To Run Script
-    runs-on: "ENP0067-USRR17-"
+    runs-on: [self-hosted, windows, ARM64]
     environment: prod
     needs: [Azure-Powershell-Script-To-Login]
     steps:
