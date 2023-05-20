@@ -16,7 +16,8 @@
 # $newUsername = $env:NEW_USERNAME
 # $newPassword = $env:NEW_PASSWORD
 
-$vmName = "ENP0067-USRR17"
+# $vmName = "ENP0067-USRR17"
+$vmName = "20.120.33.54"
 $vmUsername = "TECHADMIN"
 $vmPassword = "QWERTYasdfg12345"
 $newUsername = "techadmin"
