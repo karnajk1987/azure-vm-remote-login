@@ -78,10 +78,22 @@ jobs:
     environment: prod
     needs: [Azure-Powershell-Script-To-Login]
     steps:
-      - uses: actions/checkout@v1
-      - name: Run Azure Powershell Script
-        shell: pwsh
-        run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run PowerShell script as administrator
+        uses: actions/checkout@v2
+        with:
+          runAs: Administrator
+          pwsh: |
+            # Place your PowerShell script content here
+            $scriptPath = "Powershell_Scripts/04_remote_login_mahs.ps1"
+            Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -Command `"$scriptPath`"" -Verb RunAs
+          # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+
+      # - name: Run Azure Powershell Script
+      #   shell: pwsh
+        # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
 
   # Azure-Remote-Login-VM:
   #   name: Login to Windows VM using RDP
