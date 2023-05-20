@@ -46,6 +46,7 @@ if (-not (Get-Command -Name Invoke-AzVmRunCommand -ErrorAction SilentlyContinue)
 
 # # Enable Windows VM
 # Enable-AzVMPSRemoting -Name $vmName -ResourceGroupName $resource_group -Protocol https -OsType Windows
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 
 Enable-PSRemoting -Force
 
