@@ -54,7 +54,9 @@ Set-Item WSMan:\localhost\Client\TrustedHosts -Value "20.120.33.54" -Concatenate
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 
-Enable-PSRemoting -Force
+Enable-AzVMPSRemoting -Name $vmName -ResourceGroupName $resource_group -Protocol https -OsType Windows 
+
+# Enable-PSRemoting -Force
 
 # Invoke-AzVMCommand
 # Invoke-AzVMCommand -Name $vmName -ResourceGroupName $resource_group -ScriptBlock { get-service win* } -Credential $credential
