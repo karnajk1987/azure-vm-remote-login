@@ -17,3 +17,6 @@ https://learn.microsoft.com/en-us/azure-stack/user/ci-cd-github-action-login-cli
 https://learn.microsoft.com/en-us/azure-stack/operator/azure-stack-powershell-configure-admin?tabs=az1%2Caz2%2Caz3&view=azs-2301
 
 https://learn.microsoft.com/en-us/azure-stack/user/ci-cd-github-action-login-cli?view=azs-2301
+
+# you tube link
+https://www.youtube.com/watch?v=qvJRaYlxI1w
