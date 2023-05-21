@@ -87,8 +87,27 @@ jobs:
           runAs: Administrator
           pwsh: |
             # Place your PowerShell script content here
-            $scriptPath = "Powershell_Scripts/04_remote_login_mahs.ps1"
-            Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -Command `"$scriptPath`"" -Verb RunAs
+            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+            choco install powershell-core
+            choco install azure-cli
+
+
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Install-Module -Name Az.BootStrapper -Force -AllowPrerelease
+            Install-AzProfile -Profile 2020-09-01-hybrid -Force
+            Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
+            
+
+
+      - name: Restart the Self Hosted agent
+        uses: actions/checkout@v2
+        with:
+          runAs: Administrator
+          pwsh: |    
+            shutdown /r  
+
+            # $scriptPath = "Powershell_Scripts/04_remote_login_mahs.ps1"
+            # Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -Command `"$scriptPath`"" -Verb RunAs
           # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
 
       # - name: Run Azure Powershell Script
