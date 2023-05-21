@@ -103,12 +103,27 @@ jobs:
         run: |
             "Powershell_Scripts/04_remote_login_mahs.ps1"
 
-      - name: Restart the Self Hosted agent
-        uses: actions/checkout@v2
-        with:
-          runAs: Administrator
-          pwsh: |    
-            shutdown /r  
+      - uses: actions/checkout@v3
+
+      - name: Check the PowerShell script status
+        shell: pwsh
+        run: |
+          $scriptOutput = & "Powershell_Scripts/04_remote_login_mahs.ps1" 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "PowerShell script ran successfully"
+            Write-Host "Script output: $scriptOutput"
+          } else {
+            Write-Host "PowerShell script failed to run"
+            Write-Host "Script output: $scriptOutput"
+            exit 1
+          }
+
+      # - name: Restart the Self Hosted agent
+      #   uses: actions/checkout@v2
+      #   with:
+      #     runAs: Administrator
+      #     pwsh: |    
+      #       shutdown /r  
 
           # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
 
