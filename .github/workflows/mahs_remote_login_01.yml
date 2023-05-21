@@ -98,17 +98,10 @@ jobs:
       #       Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
             
       - uses: actions/checkout@v3
-      - name: Install Prerequisites
+      - name: Run the powershell script
         shell: pwsh
         run: |
-            
-            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-            choco install powershell-core -y
-            choco install azure-cli
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Install-Module -Name Az.BootStrapper -Force -AllowPrerelease
-            Install-AzProfile -Profile 2020-09-01-hybrid -Force
-            Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
+            "Powershell_Scripts/04_remote_login_mahs.ps1"
 
       - name: Restart the Self Hosted agent
         uses: actions/checkout@v2
