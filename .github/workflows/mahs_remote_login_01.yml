@@ -98,10 +98,10 @@ jobs:
       #       Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
             
       - uses: actions/checkout@v3
-      - name: Run the powershell script
+      - name: Run Azure Powershell Script as Administrator for script
         shell: pwsh
         run: |
-            "Powershell_Scripts/remote_script1.ps1"
+           Start-Process -FilePath "Powershell_Scripts/remote_script1.ps1" -Verb RunAs
 
       - uses: actions/checkout@v3
 
