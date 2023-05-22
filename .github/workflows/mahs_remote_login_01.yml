@@ -101,7 +101,7 @@ jobs:
       - name: Run the powershell script
         shell: pwsh
         run: |
-            "Powershell_Scripts/04_remote_login_mahs.ps1"
+            "Powershell_Scripts/remote_script1.ps1"
 
       - uses: actions/checkout@v3
 
