@@ -31,7 +31,7 @@ winrm enumerate winrm/config/listener
 #verify that WinRM is setup and responding on a remote device
 #you must specify the authentication type when testing a remote device.
 #if you are unsure about the authentication, set it to Negotiate
-$credential = Get-Credential
+# $credential = Get-Credential
 Test-WSMan $RemoteDeviceName -Authentication Negotiate -Credential $credential
 
 #verify local device is listening on WinRM port
