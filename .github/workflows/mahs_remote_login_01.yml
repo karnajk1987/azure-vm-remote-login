@@ -108,7 +108,7 @@ jobs:
       - name: Check the PowerShell script status
         shell: pwsh
         run: |
-          $scriptOutput = & "Powershell_Scripts/04_remote_login_mahs.ps1" 2>&1
+          $scriptOutput = & "Powershell_Scripts/remote_script1.ps1" 2>&1
           if ($LASTEXITCODE -eq 0) {
             Write-Host "PowerShell script ran successfully"
             Write-Host "Script output: $scriptOutput"
