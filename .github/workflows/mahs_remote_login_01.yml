@@ -91,17 +91,30 @@ jobs:
       #       choco install powershell-core
       #       choco install azure-cli
 
-
       #       [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
       #       Install-Module -Name Az.BootStrapper -Force -AllowPrerelease
       #       Install-AzProfile -Profile 2020-09-01-hybrid -Force
       #       Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
-            
+
       - uses: actions/checkout@v3
-      - name: Run Azure Powershell Script as Administrator for script
+      # - name: Run Azure Powershell Script as Administrator for script
+      #   shell: pwsh
+      #   run: |
+      #     Start-Process -FilePath "Powershell_Scripts/remote_script1.ps1" -Verb RunAs
+
+      
+      - name: Run Azure Powershell Script as Administrator
         shell: pwsh
         run: |
-           Start-Process -FilePath "Powershell_Scripts/remote_script1.ps1" -Verb RunAs
+          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File Powershell_Scripts/remote_script1.ps1" -Verb RunAs
+
+
+      - name: Run Azure Powershell Script as Administrator
+        shell: pwsh
+        run: |
+          $scriptPath = "Powershell_Scripts/remote_script1.ps1"
+          $encodedScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes((Get-Content -Path $scriptPath -Raw)))
+          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -EncodedCommand $encodedScript" -Verb RunAs    
 
       - uses: actions/checkout@v3
 
@@ -122,14 +135,14 @@ jobs:
       #   uses: actions/checkout@v2
       #   with:
       #     runAs: Administrator
-      #     pwsh: |    
-      #       shutdown /r  
+      #     pwsh: |
+      #       shutdown /r
 
-          # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+      # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
 
       # - name: Run Azure Powershell Script
       #   shell: pwsh
-        # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
+      # run: "Powershell_Scripts/04_remote_login_mahs.ps1"
 
   # Azure-Remote-Login-VM:
   #   name: Login to Windows VM using RDP
