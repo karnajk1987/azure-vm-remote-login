@@ -19,7 +19,7 @@ $credential = New-Object -TypeName System.Management.Automation.PSCredential -Ar
 #verify that WinRM is setup and configured locally
 Test-WSMan
 
-Set-Item WSMan:\localhost\Client\TrustedHosts -Value $trustedHost -Concatenate -Force
+# Set-Item WSMan:\localhost\Client\TrustedHosts -Value $trustedHost -Concatenate -Force
 
 # check winrm settings
 winrm get winrm/config/client
