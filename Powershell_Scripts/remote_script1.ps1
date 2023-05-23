@@ -7,7 +7,7 @@ $newPassword = "KAMISAMA@123@@"
 $resource_group = "mahsprbc-rgp-0047-enp0067-smart_automation"
 $trustedHost = "ENP0067-USRR17"
 $RemoteDeviceName = "ENP0067-USRR17"
-$IPRemoteDeviceName = "10.1.0.5"
+$IPRemoteDeviceName = "52.150.13.114"
 
 
 # Create a credential object
