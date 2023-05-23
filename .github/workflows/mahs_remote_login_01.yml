@@ -100,9 +100,8 @@ jobs:
       - name: Add the trusted host and enable wsman settings
         shell: pwsh
         run: |
-          $scriptPath = "Powershell_Scripts/wsman_ps.ps1"
-          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File Powershell_Scripts/wsman_ps.ps1" -Verb RunAs
-
+           Write-Host 'Hello, Going to execute Powershell Script for administrator task'
+          
       - name: Run Azure Powershell Script as Administrator
         shell: pwsh
         run: |
