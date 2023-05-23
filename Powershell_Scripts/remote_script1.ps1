@@ -7,7 +7,7 @@ $newPassword = "KAMISAMA@123@@"
 $resource_group = "mahsprbc-rgp-0047-enp0067-smart_automation"
 $trustedHost = "ENP0067-USRR17"
 $RemoteDeviceName = "ENP0067-USRR17"
-$IPRemoteDeviceName = "52.150.13.114"
+$IPRemoteDeviceName = "10.1.0.4"
 
 
 # Create a credential object
@@ -32,8 +32,7 @@ winrm enumerate winrm/config/listener
 #you must specify the authentication type when testing a remote device.
 #if you are unsure about the authentication, set it to Negotiate
 # $credential = Get-Credential
-Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true
-Set-Item WSMan:\localhost\Service\AllowUnencryptedTraffic -Value $true
+
 Set-Item WSMan:\localhost\Client\TrustedHosts -Value $RemoteDeviceName -Concatenate -Force
 
 Test-WSMan $RemoteDeviceName -Authentication Negotiate -Credential $credential
