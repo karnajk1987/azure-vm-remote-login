@@ -97,24 +97,25 @@ jobs:
       #       Install-Module -Name AzureStack -RequiredVersion 2.0.2-preview -AllowPrerelease
 
       - uses: actions/checkout@v3
-      # - name: Run Azure Powershell Script as Administrator for script
-      #   shell: pwsh
-      #   run: |
-      #     Start-Process -FilePath "Powershell_Scripts/remote_script1.ps1" -Verb RunAs
-
-      
-      - name: Run Azure Powershell Script as Administrator
+      - name: Add the trusted host and enable wsman settings
         shell: pwsh
         run: |
-          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File Powershell_Scripts/remote_script1.ps1" -Verb RunAs
-
+          Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true
+          Set-Item WSMan:\localhost\Service\AllowUnencryptedTraffic -Value $true
+          Set-Item WSMan:\localhost\Client\TrustedHosts -Value ENP0067-USRR17 -Concatenate -Force
 
       - name: Run Azure Powershell Script as Administrator
         shell: pwsh
         run: |
           $scriptPath = "Powershell_Scripts/remote_script1.ps1"
-          $encodedScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes((Get-Content -Path $scriptPath -Raw)))
-          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -EncodedCommand $encodedScript" -Verb RunAs    
+          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File Powershell_Scripts/remote_script1.ps1" -Verb RunAs
+
+      # - name: Run Azure Powershell Script as Administrator
+      #   shell: pwsh
+      #   run: |
+      #     $scriptPath = "Powershell_Scripts/remote_script1.ps1"
+      #     $encodedScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes((Get-Content -Path $scriptPath -Raw)))
+      #     Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -EncodedCommand $encodedScript" -Verb RunAs
 
       - uses: actions/checkout@v3
 
