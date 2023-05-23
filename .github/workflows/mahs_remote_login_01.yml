@@ -100,9 +100,8 @@ jobs:
       - name: Add the trusted host and enable wsman settings
         shell: pwsh
         run: |
-          Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true
-          Set-Item WSMan:\localhost\Service\AllowUnencryptedTraffic -Value $true
-          Set-Item WSMan:\localhost\Client\TrustedHosts -Value ENP0067-USRR17 -Concatenate -Force
+          $scriptPath = "Powershell_Scripts/wsman_ps.ps1"
+          Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File Powershell_Scripts/wsman_ps.ps1" -Verb RunAs
 
       - name: Run Azure Powershell Script as Administrator
         shell: pwsh
